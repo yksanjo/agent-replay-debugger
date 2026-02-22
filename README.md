@@ -1,195 +1,84 @@
-# Agent Replay Debugger
+# agent-replay-debugger
 
-Record, replay, and debug AI agent sessions with full state inspection.
+## Detailed Description
 
-## Features
+agent-replay-debugger is maintained as an industry-grade software project with production-ready engineering practices.  
+This repository includes documented setup, quality gates, operational guidance, and governance standards so contributors can safely build, test, and ship changes with confidence.
 
-- **Session Recording**: Capture every API call, response, and state change
-- **Replay Mode**: Re-execute sessions step-by-step or all at once
-- **State Inspection**: View agent state at any point in time
-- **Diff View**: Compare expected vs actual outputs
-- **Time Travel**: Jump to any point in the session
-- **Export**: Share sessions as JSON for debugging
+## Problem Statement
 
-## Quick Start
+Describe the user or business problem this project solves, the target users, and expected outcomes.
+
+## Solution Overview
+
+Summarize the architecture, core modules, and runtime behavior at a high level.
+
+## Key Features
+
+- Clear project scope and intended use.
+- Reproducible local development workflow.
+- Test coverage and CI quality gates.
+- Security and contribution policies.
+- Deployment-ready repository structure.
+
+## Repository Structure
+
+```text
+.
+|-- src/                  # Core implementation
+|-- tests/                # Automated test suites
+|-- docs/                 # Design notes and operational docs
+|-- .github/workflows/    # CI pipelines
+|-- README.md
+|-- LICENSE
+|-- CONTRIBUTING.md
+|-- SECURITY.md
+|-- CODE_OF_CONDUCT.md
+```
+
+## Getting Started
+
+### Prerequisites
+
+- Git
+- Project runtime/toolchain for this repo
+
+### Local Setup
 
 ```bash
-pip install agent-replay-debugger
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt  # or: pip install -e .[dev]
+pytest
 ```
 
-```python
-from agent_replay_debugger import Recorder, Replayer
+## Usage
 
-# Record a session
-recorder = Recorder(session_id="debug-001")
+Document primary commands, API routes, CLI examples, or UI workflows here.
 
-with recorder.capture():
-    # Your agent code runs here
-    response = agent.run("Analyze this document...")
+## Quality Standards
 
-# Save the recording
-recorder.save("session-001.json")
-```
+- CI must pass before merge.
+- Changes require tests for critical behavior.
+- Security-sensitive changes should include risk notes.
+- Keep pull requests focused and reviewable.
 
-## Recording
+## Security
 
-```python
-from agent_replay_debugger import Recorder
+See `SECURITY.md` for responsible disclosure and handling guidelines.
 
-recorder = Recorder()
+## Contributing
 
-# Record individual events
-recorder.record_input("user", "What is the weather?")
-recorder.record_llm_call(
-    model="gpt-4",
-    prompt="...",
-    response="...",
-    tokens={"input": 100, "output": 50}
-)
-recorder.record_tool_call(
-    tool="weather_api",
-    args={"city": "Tokyo"},
-    result={"temp": 22, "condition": "sunny"}
-)
-recorder.record_output("agent", "The weather in Tokyo is 22C and sunny")
+See `CONTRIBUTING.md` for branching, commit, and pull request expectations.
 
-# Get full timeline
-timeline = recorder.get_timeline()
-```
+## Roadmap
 
-## Replay
+Track upcoming milestones, technical debt, and planned feature work.
 
-```python
-from agent_replay_debugger import Replayer
+## Support
 
-replayer = Replayer.from_file("session-001.json")
-
-# Step through events
-while replayer.has_next():
-    event = replayer.step()
-    print(f"[{event.timestamp}] {event.type}: {event.summary}")
-
-# Jump to specific event
-replayer.goto(event_id=5)
-
-# Get state at current position
-state = replayer.get_state()
-```
-
-## CLI
-
-```bash
-# Replay a session interactively
-agent-replay play session-001.json
-
-# Show session summary
-agent-replay info session-001.json
-
-# Export to HTML report
-agent-replay export session-001.json --format html --output report.html
-
-# Compare two sessions
-agent-replay diff session-001.json session-002.json
-```
-
-## Web UI
-
-```bash
-# Start the debug UI
-agent-replay serve
-
-# Opens at http://localhost:8800
-```
-
-Features:
-- Timeline visualization
-- State inspector
-- LLM call viewer with token highlighting
-- Tool execution traces
-- Side-by-side diff mode
-
-## Integration
-
-### OpenAI
-
-```python
-from agent_replay_debugger.integrations import patch_openai
-
-recorder = Recorder()
-patch_openai(recorder)
-
-# All OpenAI calls are now recorded
-response = openai.chat.completions.create(...)
-```
-
-### LangChain
-
-```python
-from agent_replay_debugger.integrations import LangChainCallback
-
-recorder = Recorder()
-callback = LangChainCallback(recorder)
-
-agent.run("...", callbacks=[callback])
-```
-
-### Anthropic
-
-```python
-from agent_replay_debugger.integrations import patch_anthropic
-
-recorder = Recorder()
-patch_anthropic(recorder)
-
-# All Anthropic calls are now recorded
-response = anthropic.messages.create(...)
-```
-
-## Event Types
-
-| Type | Description |
-|------|-------------|
-| `input` | User or system input |
-| `output` | Agent response |
-| `llm_call` | LLM API call with prompt/response |
-| `tool_call` | Tool/function execution |
-| `state_change` | Agent state modification |
-| `error` | Exception or error |
-| `log` | Debug log message |
-
-## Session Format
-
-```json
-{
-  "session_id": "debug-001",
-  "started_at": "2024-01-15T10:30:00Z",
-  "ended_at": "2024-01-15T10:30:45Z",
-  "events": [
-    {
-      "id": 1,
-      "timestamp": "2024-01-15T10:30:00Z",
-      "type": "input",
-      "data": {"role": "user", "content": "What is 2+2?"}
-    },
-    {
-      "id": 2,
-      "timestamp": "2024-01-15T10:30:01Z",
-      "type": "llm_call",
-      "data": {
-        "model": "gpt-4",
-        "prompt": "...",
-        "response": "4",
-        "tokens": {"input": 50, "output": 1}
-      }
-    }
-  ],
-  "metadata": {
-    "agent": "math-assistant",
-    "version": "1.0.0"
-  }
-}
-```
+Open a GitHub issue for bugs, feature requests, or documentation gaps.
 
 ## License
 
-MIT
+This project is released under the MIT License.
